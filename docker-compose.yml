@@ -22,13 +22,13 @@ services:
     working_dir: /app
     command: node server.mjs
     ports:
-      - "127.0.0.1:9091:9091"
+      - "0.0.0.0:9090:9091"
     environment:
       PORT: 9091
       DATA_BACKEND: postgres
       DATABASE_URL: postgres://needs_user:${DB_PASSWORD}@db:5432/needs_manager
       NODE_ENV: production
-      ALLOWED_ORIGIN: https://aura.need.teamchart.it
+      ALLOWED_ORIGIN: "*"
       UPLOADS_DIR: /app/uploads
     volumes:
       - ./:/app
