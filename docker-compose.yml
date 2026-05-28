@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    container_name: need-aura-db
+    environment:
+      POSTGRES_DB: needs_manager
+      POSTGRES_USER: needs_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+    networks:
+      - need-net
+
+  app:
+    image: node:20-alpine
+    restart: always
+    container_name: need-aura-app
+    working_dir: /app
+    command: node server.mjs
+    ports:
+      - "127.0.0.1:8091:8091"
+    environment:
+      PORT: 8091
+      DATA_BACKEND: postgres
+      DATABASE_URL: postgres://needs_user:${DB_PASSWORD}@db:5432/needs_manager
+      NODE_ENV: production
+      ALLOWED_ORIGIN: https://aura.need.teamchart.it
+      UPLOADS_DIR: /app/uploads
+    volumes:
+      - ./:/app
+      - uploads:/app/uploads
+    depends_on:
+      - db
+    networks:
+      - need-net
+
+networks:
+  need-net:
+    driver: bridge
+
+volumes:
+  pgdata:
+  uploads:

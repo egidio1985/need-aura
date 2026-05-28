@@ -1,0 +1,20 @@
+{
+  "name": "candidate-needs-manager-local",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Candidate & Needs Manager with PostgreSQL or CSV backend.",
+  "scripts": {
+    "start": "node server.mjs",
+    "migrate:postgres": "node migrate-to-postgres.mjs",
+    "setup:render-db": "node setup-render-db.mjs",
+    "update:render-db-cv": "node update-render-db-cv.mjs",
+    "export:postgres": "node export-postgres-db.mjs",
+    "test:email": "node test-email.mjs",
+    "check": "node --check server.mjs",
+    "test": "node test.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Candidate & Needs Manager</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <img class="brand-logo" src="/assets/logo-aura.png" alt="AURA technologies" />
+          <div>
+            <h1>Candidate & Needs Manager</h1>
+            <p>Dashboard locale, gestione CSV e matching candidati per need.</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button id="toolsMenuButton" class="secondary" aria-haspopup="true" aria-expanded="false" title="Import/export">Tools</button>
+          <div id="toolsMenu" class="tools-menu" hidden>
+            <button id="importCandidatesButton" type="button">Import candidati</button>
+            <button id="importNeedsButton" type="button">Import need</button>
+            <button id="exportCandidatesButton" type="button">Candidati To Excel</button>
+            <button id="exportNeedsButton" type="button">Need To Excel</button>
+          </div>
+          <input id="importCandidatesInput" type="file" accept=".xlsx,.csv" hidden />
+          <input id="importNeedsInput" type="file" accept=".xlsx,.csv" hidden />
+        </div>
+      </header>
+
+      <section class="kpi-grid" id="dashboard"></section>
+
+      <section class="toolbar">
+        <div class="tabs" role="tablist">
+          <button class="tab" data-tab="dashboardPage">Dashboard</button>
+          <button class="tab active" data-tab="needs">Need</button>
+          <button class="tab" data-tab="candidates">Candidati</button>
+          <button class="tab" data-tab="pipeline">Pipeline</button>
+          <button class="tab" data-tab="matching">Matching</button>
+        </div>
+        <label class="search">
+          <span>Cerca</span>
+          <input id="searchInput" type="search" placeholder="Nome, skill, cliente, ruolo..." />
+        </label>
+      </section>
+
+      <p id="statusMessage" class="status" hidden></p>
+
+      <section id="dashboardPageView" class="view">
+        <div class="section-heading">
+          <div>
+            <h2>Dashboard</h2>
+            <p>Analisi fornitori CV e candidature proposte sui need.</p>
+          </div>
+        </div>
+        <div class="dashboard-grid">
+          <article class="chart-panel">
+            <h3>Candidati per fornitore CV</h3>
+            <div id="sourceChart" class="bar-chart"></div>
+          </article>
+          <article class="chart-panel wide">
+            <h3>Candidati proposti da ciascun fornitore per need</h3>
+            <div id="needSourceChart" class="matrix-chart"></div>
+          </article>
+          <article class="chart-panel wide quality-panel">
+            <h3>Stato candidati per fornitore CV</h3>
+            <div id="sourceStatusChart" class="matrix-chart"></div>
+          </article>
+          <article class="chart-panel wide need-status-panel">
+            <h3>Stato candidati per need</h3>
+            <div id="needStatusChart" class="matrix-chart"></div>
+          </article>
+        </div>
+      </section>
+
+      <section id="needsView" class="view active">
+        <div class="section-heading">
+          <h2>Need</h2>
+          <div class="section-actions">
+            <label class="need-priority-filter">
+              <span>Priorita</span>
+              <select id="needPriorityFilter"></select>
+            </label>
+            <label class="need-status-filter">
+              <span>Vista</span>
+              <select id="needStatusFilter"></select>
+            </label>
+            <button id="newNeedButton" class="primary">Nuovo need</button>
+          </div>
+        </div>
+        <div id="needsList" class="list"></div>
+      </section>
+
+      <section id="candidatesView" class="view">
+        <div class="section-heading">
+          <h2>Candidati</h2>
+          <div class="section-actions">
+            <label class="candidate-status-filter">
+              <span>Vista</span>
+              <select id="candidateStatusFilter"></select>
+            </label>
+            <button id="newCandidateButton" class="primary">Nuovo candidato</button>
+          </div>
+        </div>
+        <div id="candidatesList" class="list"></div>
+      </section>
+
+      <section id="pipelineView" class="view">
+        <div class="section-heading">
+          <div>
+            <h2>Pipeline</h2>
+            <p>Gestisci lo step di processo per ogni candidato.</p>
+          </div>
+          <label class="pipeline-filter">
+            <span>Stato pipeline</span>
+            <select id="pipelineFilter">
+              <option value="Tutte">Tutte</option>
+              <option value="Primo contatto">Primo contatto</option>
+              <option value="Colloquio HR">Colloquio HR</option>
+              <option value="Primo Colloquio">Primo Colloquio</option>
+              <option value="Inviato Dossier">Inviato Dossier</option>
+              <option value="Organizzata QM">Organizzata QM</option>
+              <option value="KO BM">KO BM</option>
+              <option value="KO Candidato">KO Candidato</option>
+              <option value="KO Cliente">KO Cliente</option>
+              <option value="QM OK">QM OK</option>
+              <option value="Interno">Interno</option>
+              <option value="Senza fase">Senza fase</option>
+            </select>
+          </label>
+        </div>
+        <div id="pipelineBoard" class="pipeline-board"></div>
+      </section>
+
+      <section id="matchingView" class="view">
+        <div class="section-heading">
+          <div>
+            <h2>Matching</h2>
+            <p>Scegli un need e confronta i candidati ordinati per idoneità.</p>
+          </div>
+          <label class="matching-select">
+            <span>Need da valutare</span>
+            <select id="needSelect"></select>
+          </label>
+        </div>
+        <div id="matchesList" class="list"></div>
+      </section>
+    </main>
+
+    <dialog id="editDialog">
+      <form method="dialog" id="editForm" class="dialog-card">
+        <header>
+          <h2 id="dialogTitle">Modifica</h2>
+          <button value="cancel" class="ghost" type="submit">Chiudi</button>
+        </header>
+        <div id="formFields" class="form-grid"></div>
+        <footer>
+          <button value="cancel" class="secondary" type="submit">Annulla</button>
+          <button id="saveButton" value="default" class="primary" type="button">Salva</button>
+        </footer>
+      </form>
+    </dialog>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
